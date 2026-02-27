@@ -131,9 +131,11 @@ export class WaitForHumanHandler implements Handler {
         c.to === answer.value,
     );
 
-    // Fallback to first choice if no match
     if (!selected) {
-      selected = choices[0]!;
+      return {
+        status: StageStatus.FAIL,
+        failureReason: `No matching choice for answer "${answer.value}"`,
+      };
     }
 
     return {

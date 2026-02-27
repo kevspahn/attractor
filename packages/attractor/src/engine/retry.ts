@@ -43,7 +43,7 @@ export function delayForAttempt(
     // jitter range: 0.5 to 1.5
     delay = delay * (0.5 + rng());
   }
-  return Math.floor(delay);
+  return Math.min(Math.floor(delay), config.maxDelayMs);
 }
 
 /**

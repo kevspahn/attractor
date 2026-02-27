@@ -178,7 +178,7 @@ describe("WaitForHumanHandler", () => {
     expect(outcome.failureReason).toContain("skipped");
   });
 
-  it("falls back to first choice when answer does not match", async () => {
+  it("returns FAIL when answer does not match any choice", async () => {
     const graph = makeGraph(
       ["gate", "approve", "reject"],
       [
@@ -194,8 +194,8 @@ describe("WaitForHumanHandler", () => {
 
     const outcome = await handler.execute(node, ctx, graph, "");
 
-    expect(outcome.status).toBe(StageStatus.SUCCESS);
-    expect(outcome.suggestedNextIds).toEqual(["approve"]);
+    expect(outcome.status).toBe(StageStatus.FAIL);
+    expect(outcome.failureReason).toContain('No matching choice for answer "Z"');
   });
 
   it("returns SKIPPED when queue is empty", async () => {

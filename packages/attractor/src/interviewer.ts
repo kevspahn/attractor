@@ -118,6 +118,7 @@ export class ConsoleInterviewer implements Interviewer {
 
       rl.question(`${lines.join("\n")}\n${promptText}`, (response) => {
         rl.close();
+        process.stdin.resume();
 
         if (question.type === QuestionType.YES_NO) {
           const isYes = response.trim().toLowerCase().startsWith("y");

@@ -44,7 +44,7 @@ const SHAPE_TO_TYPE: Record<string, string> = {
 };
 
 /** Known handler types */
-const KNOWN_TYPES = new Set(Object.values(SHAPE_TO_TYPE));
+const KNOWN_TYPES = new Set([...Object.values(SHAPE_TO_TYPE), "coding_agent"]);
 
 /** Valid fidelity modes */
 const VALID_FIDELITY_MODES = new Set([

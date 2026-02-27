@@ -202,7 +202,7 @@ export class PipelineEngine {
     }
 
     // Emit pipeline started
-    this.events.emitPipelineStarted(graph.id, logsRoot);
+    this.events.emitPipelineStarted(graph.attributes.label || graph.id, graph.id);
 
     // Find start node or resume point
     let currentNode: Node;
