@@ -62,6 +62,36 @@ describe("validate", () => {
       expect(errors).toHaveLength(1);
       expect(errors[0]!.message).toContain("found 2");
     });
+
+    it("recognizes start node by id='start' without shape=Mdiamond", () => {
+      const diagnostics = parseAndValidate(`
+        digraph Test {
+          start [label="Begin"]
+          exit  [shape=Msquare]
+          task  [label="Do work", prompt="Do the work"]
+          start -> task -> exit
+        }
+      `);
+      const startErrors = diagnostics.filter(
+        (d) => d.rule === "start_node" && d.severity === Severity.ERROR,
+      );
+      expect(startErrors).toHaveLength(0);
+    });
+
+    it("recognizes start node by id='Start' without shape=Mdiamond", () => {
+      const diagnostics = parseAndValidate(`
+        digraph Test {
+          Start [label="Begin"]
+          exit  [shape=Msquare]
+          task  [label="Do work", prompt="Do the work"]
+          Start -> task -> exit
+        }
+      `);
+      const startErrors = diagnostics.filter(
+        (d) => d.rule === "start_node" && d.severity === Severity.ERROR,
+      );
+      expect(startErrors).toHaveLength(0);
+    });
   });
 
   describe("terminal_node rule", () => {
@@ -84,6 +114,66 @@ describe("validate", () => {
       const errors = diagnostics.filter((d) => d.rule === "terminal_node");
       expect(errors).toHaveLength(1);
       expect(errors[0]!.severity).toBe(Severity.ERROR);
+    });
+
+    it("recognizes terminal node by id='exit' without shape=Msquare", () => {
+      const diagnostics = parseAndValidate(`
+        digraph Test {
+          start [shape=Mdiamond]
+          exit  [label="Done"]
+          task  [label="Do work", prompt="Do the work"]
+          start -> task -> exit
+        }
+      `);
+      const terminalErrors = diagnostics.filter(
+        (d) => d.rule === "terminal_node" && d.severity === Severity.ERROR,
+      );
+      expect(terminalErrors).toHaveLength(0);
+    });
+
+    it("recognizes terminal node by id='end' without shape=Msquare", () => {
+      const diagnostics = parseAndValidate(`
+        digraph Test {
+          start [shape=Mdiamond]
+          end   [label="Done"]
+          task  [label="Do work", prompt="Do the work"]
+          start -> task -> end
+        }
+      `);
+      const terminalErrors = diagnostics.filter(
+        (d) => d.rule === "terminal_node" && d.severity === Severity.ERROR,
+      );
+      expect(terminalErrors).toHaveLength(0);
+    });
+
+    it("recognizes terminal node by id='Exit' without shape=Msquare", () => {
+      const diagnostics = parseAndValidate(`
+        digraph Test {
+          start [shape=Mdiamond]
+          Exit  [label="Done"]
+          task  [label="Do work", prompt="Do the work"]
+          start -> task -> Exit
+        }
+      `);
+      const terminalErrors = diagnostics.filter(
+        (d) => d.rule === "terminal_node" && d.severity === Severity.ERROR,
+      );
+      expect(terminalErrors).toHaveLength(0);
+    });
+
+    it("recognizes terminal node by id='End' without shape=Msquare", () => {
+      const diagnostics = parseAndValidate(`
+        digraph Test {
+          start [shape=Mdiamond]
+          End   [label="Done"]
+          task  [label="Do work", prompt="Do the work"]
+          start -> task -> End
+        }
+      `);
+      const terminalErrors = diagnostics.filter(
+        (d) => d.rule === "terminal_node" && d.severity === Severity.ERROR,
+      );
+      expect(terminalErrors).toHaveLength(0);
     });
   });
 

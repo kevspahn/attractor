@@ -61,7 +61,7 @@ const VALID_FIDELITY_MODES = new Set([
 function findStartNodes(graph: Graph): Node[] {
   const startNodes: Node[] = [];
   for (const [, node] of graph.nodes) {
-    if (node.shape === "Mdiamond") {
+    if (node.shape === "Mdiamond" || node.id === "start" || node.id === "Start") {
       startNodes.push(node);
     }
   }
@@ -71,7 +71,13 @@ function findStartNodes(graph: Graph): Node[] {
 function findTerminalNodes(graph: Graph): Node[] {
   const terminalNodes: Node[] = [];
   for (const [, node] of graph.nodes) {
-    if (node.shape === "Msquare") {
+    if (
+      node.shape === "Msquare" ||
+      node.id === "exit" ||
+      node.id === "end" ||
+      node.id === "Exit" ||
+      node.id === "End"
+    ) {
       terminalNodes.push(node);
     }
   }

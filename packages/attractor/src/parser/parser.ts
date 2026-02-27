@@ -43,6 +43,9 @@ class Parser {
   private subgraphs: Subgraph[] = [];
   private graphAttributes: GraphAttributes = createDefaultGraphAttributes();
 
+  // Subgraph label tracking — when inside a subgraph, top-level `label = "..."` is captured here
+  private subgraphLabelStack: string[] = [];
+
   constructor(tokens: Token[]) {
     this.tokens = tokens;
   }
@@ -180,11 +183,9 @@ class Parser {
     // Push new scope
     this.nodeDefaultsStack.push({ ...this.currentNodeDefaults() });
     this.edgeDefaultsStack.push({ ...this.currentEdgeDefaults() });
+    this.subgraphLabelStack.push("");
 
     const nodesBefore = new Set(this.nodes.keys());
-
-    // Parse subgraph label if it's a graph attr statement
-    let subLabel = "";
 
     // Parse statements within subgraph
     while (!this.check(TokenType.RBRACE) && !this.check(TokenType.EOF)) {
@@ -206,18 +207,10 @@ class Parser {
     // Get subgraph label from the node defaults scope (in case graph attrs were set)
     const scopeDefaults = this.currentNodeDefaults();
 
-    // Pop scope
+    // Pop subgraph label and scopes
+    const subLabel = this.subgraphLabelStack.pop() || "";
     this.nodeDefaultsStack.pop();
     this.edgeDefaultsStack.pop();
-
-    // Get subgraph label
-    subLabel = this.graphAttributes.raw[`_subgraph_label_${subId}`] || "";
-    // Clean up temporary key
-    delete this.graphAttributes.raw[`_subgraph_label_${subId}`];
-
-    // Try to get label from the subgraph's internal graph attributes
-    // The subgraph may have had a label = "..." statement which would have
-    // been parsed as a graph-level attribute. We need to recover it.
 
     const subgraph: Subgraph = {
       id: subId,
@@ -250,7 +243,12 @@ class Parser {
     if (this.check(TokenType.EQUALS)) {
       this.advance(); // consume =
       const value = this.parseValue();
-      this.applyGraphAttributes({ [firstId]: value });
+      // When inside a subgraph, intercept `label` to capture as subgraph label
+      if (firstId === "label" && this.subgraphLabelStack.length > 0) {
+        this.subgraphLabelStack[this.subgraphLabelStack.length - 1] = value;
+      } else {
+        this.applyGraphAttributes({ [firstId]: value });
+      }
       return;
     }
 

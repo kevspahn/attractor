@@ -298,6 +298,55 @@ describe("parseDot", () => {
   it("throws on missing graph ID", () => {
     expect(() => parseDot("digraph { }")).toThrow(ParseError);
   });
+
+  it("captures subgraph label and derives class for contained nodes", () => {
+    const graph = parseDot(`
+      digraph Test {
+        subgraph cluster_loop {
+          label = "Loop A"
+          node [thread_id="loop-a"]
+          Plan [label="Plan next step"]
+          Implement [label="Implement"]
+        }
+      }
+    `);
+    expect(graph.subgraphs).toHaveLength(1);
+    expect(graph.subgraphs[0]!.label).toBe("Loop A");
+    // Nodes should have derived class "loop-a"
+    expect(graph.nodes.get("Plan")!.className).toBe("loop-a");
+    expect(graph.nodes.get("Implement")!.className).toBe("loop-a");
+  });
+
+  it("does not override explicit class with subgraph-derived class", () => {
+    const graph = parseDot(`
+      digraph Test {
+        subgraph cluster_loop {
+          label = "Loop A"
+          Plan [label="Plan", class="custom"]
+          Implement [label="Implement"]
+        }
+      }
+    `);
+    // Explicit class should not be overridden
+    expect(graph.nodes.get("Plan")!.className).toBe("custom");
+    // Non-explicit should get derived class
+    expect(graph.nodes.get("Implement")!.className).toBe("loop-a");
+  });
+
+  it("does not pollute graph-level label with subgraph label", () => {
+    const graph = parseDot(`
+      digraph Test {
+        graph [label="Pipeline Label"]
+        subgraph cluster_loop {
+          label = "Loop A"
+          A [label="A"]
+        }
+      }
+    `);
+    // Graph-level label should remain unchanged
+    expect(graph.attributes.label).toBe("Pipeline Label");
+    expect(graph.subgraphs[0]!.label).toBe("Loop A");
+  });
 });
 
 describe("deriveClassName", () => {
