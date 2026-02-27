@@ -9,3 +9,4 @@ export { shellTool } from "./shell.js";
 export { grepTool } from "./grep.js";
 export { globTool } from "./glob.js";
 export { applyPatchTool } from "./apply-patch.js";
+export { createSubagentTools } from "./subagent-tools.js";
