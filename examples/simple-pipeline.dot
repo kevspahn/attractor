@@ -1,0 +1,15 @@
+digraph code_review {
+  goal = "Review and improve code quality"
+
+  start [shape=Mdiamond]
+  analyze [prompt="Analyze the codebase for issues"]
+  review [shape=hexagon, label="Human Review"]
+  fix [prompt="Fix the identified issues"]
+  done [shape=Msquare]
+
+  start -> analyze
+  analyze -> review
+  review -> fix [label="Fix"]
+  review -> done [label="Approve"]
+  fix -> done
+}
