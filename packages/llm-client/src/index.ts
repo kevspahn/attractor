@@ -17,6 +17,20 @@ export type { ClientConfig, Middleware, StreamMiddleware } from "./client.js";
 export { getModelInfo, listModels, getLatestModel } from "./catalog.js";
 export type { ModelInfo } from "./catalog.js";
 
+// Re-export high-level API (Layer 4)
+export { generate, executeTools } from "./generate.js";
+export type {
+  GenerateOptions,
+  StepResult,
+  GenerateResult,
+} from "./generate.js";
+
+export { stream } from "./stream-fn.js";
+export type { StreamResult } from "./stream-fn.js";
+
+export { generateObject } from "./generate-object.js";
+export type { GenerateObjectOptions } from "./generate-object.js";
+
 // ---------------------------------------------------------------------------
 // Module-level default client
 // ---------------------------------------------------------------------------
