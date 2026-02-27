@@ -7,9 +7,9 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
-      "require": "./dist/index.cjs",
-      "types": "./dist/index.d.ts"
+      "require": "./dist/index.cjs"
     }
   },
   "scripts": {
@@ -20,5 +20,8 @@
   },
   "dependencies": {
     "@attractor/llm-client": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^25.3.2"
   }
 }
