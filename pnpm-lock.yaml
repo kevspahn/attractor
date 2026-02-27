@@ -36,6 +36,10 @@ importers:
       '@attractor/llm-client':
         specifier: workspace:*
         version: link:../llm-client
+    devDependencies:
+      '@types/node':
+        specifier: ^25.3.2
+        version: 25.3.2
 
   packages/llm-client: {}
 

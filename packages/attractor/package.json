@@ -21,5 +21,8 @@
   "dependencies": {
     "@attractor/llm-client": "workspace:*",
     "@attractor/agent-loop": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^25.3.2"
   }
 }
