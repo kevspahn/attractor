@@ -5,3 +5,6 @@ export * from "./types/index.js";
 
 // Re-export provider utilities
 export * from "./utils/index.js";
+
+// Re-export provider adapters
+export * from "./providers/index.js";
