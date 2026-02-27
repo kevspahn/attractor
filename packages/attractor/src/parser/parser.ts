@@ -204,8 +204,9 @@ class Parser {
       }
     }
 
-    // Get subgraph label from the node defaults scope (in case graph attrs were set)
-    const scopeDefaults = this.currentNodeDefaults();
+    // Capture scope defaults BEFORE popping
+    const scopeNodeDefaults = this.currentNodeDefaults();
+    const scopeEdgeDefaults = this.currentEdgeDefaults();
 
     // Pop subgraph label and scopes
     const subLabel = this.subgraphLabelStack.pop() || "";
@@ -215,8 +216,8 @@ class Parser {
     const subgraph: Subgraph = {
       id: subId,
       label: subLabel,
-      nodeDefaults: scopeDefaults,
-      edgeDefaults: this.currentEdgeDefaults(),
+      nodeDefaults: scopeNodeDefaults,
+      edgeDefaults: scopeEdgeDefaults,
       nodeIds,
     };
 

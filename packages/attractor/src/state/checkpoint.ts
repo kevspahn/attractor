@@ -78,7 +78,18 @@ export function saveCheckpoint(checkpoint: Checkpoint, filePath: string): void {
  */
 export function loadCheckpoint(filePath: string): Checkpoint {
   const raw = fs.readFileSync(filePath, "utf-8");
-  const json = JSON.parse(raw) as CheckpointJSON;
+  const json = JSON.parse(raw);
+
+  if (!json || typeof json !== "object") {
+    throw new Error(`Invalid checkpoint file: ${filePath}`);
+  }
+  if (
+    typeof json.current_node !== "string" ||
+    !Array.isArray(json.completed_nodes) ||
+    !Array.isArray(json.logs)
+  ) {
+    throw new Error(`Checkpoint file is missing required fields: ${filePath}`);
+  }
 
   return {
     timestamp: json.timestamp,

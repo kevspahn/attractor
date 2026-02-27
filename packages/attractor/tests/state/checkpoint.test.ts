@@ -95,6 +95,29 @@ describe("Checkpoint", () => {
     expect(fs.existsSync(filePath)).toBe(true);
   });
 
+  it("throws on malformed checkpoint file", () => {
+    tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "attractor-test-"));
+    const filePath = path.join(tmpDir, "bad-checkpoint.json");
+
+    // Write a JSON file missing required fields
+    fs.writeFileSync(filePath, JSON.stringify({ foo: "bar" }), "utf-8");
+
+    expect(() => loadCheckpoint(filePath)).toThrow(
+      "Checkpoint file is missing required fields",
+    );
+  });
+
+  it("throws on non-object checkpoint file", () => {
+    tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "attractor-test-"));
+    const filePath = path.join(tmpDir, "bad-checkpoint.json");
+
+    fs.writeFileSync(filePath, '"just a string"', "utf-8");
+
+    expect(() => loadCheckpoint(filePath)).toThrow(
+      "Invalid checkpoint file",
+    );
+  });
+
   it("saved JSON uses snake_case keys", () => {
     tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "attractor-test-"));
     const filePath = path.join(tmpDir, "checkpoint.json");

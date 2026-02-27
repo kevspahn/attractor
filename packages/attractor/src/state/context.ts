@@ -60,7 +60,11 @@ export class Context {
   clone(): Context {
     const ctx = new Context();
     for (const [key, value] of this.values) {
-      ctx.values.set(key, value);
+      try {
+        ctx.values.set(key, structuredClone(value));
+      } catch {
+        ctx.values.set(key, value); // non-cloneable values share reference
+      }
     }
     ctx.logs = [...this.logs];
     return ctx;

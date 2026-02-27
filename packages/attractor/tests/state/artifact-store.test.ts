@@ -113,6 +113,16 @@ describe("ArtifactStore", () => {
     expect(fs.existsSync(artifactPath)).toBe(false);
   });
 
+  it("rejects path traversal in artifact IDs", () => {
+    tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "attractor-artifact-test-"));
+    const store = new ArtifactStore(tmpDir, 10);
+
+    const data = { payload: "This exceeds the threshold to trigger file-backing" };
+    expect(() => store.store("../../etc/malicious", "exploit", data)).toThrow(
+      'Invalid artifact ID: "../../etc/malicious"',
+    );
+  });
+
   it("stores artifacts with different data types", () => {
     const store = new ArtifactStore();
 

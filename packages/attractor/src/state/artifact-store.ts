@@ -32,6 +32,16 @@ export class ArtifactStore {
   }
 
   /**
+   * Validate that a file path stays within the artifacts directory.
+   */
+  private validateArtifactPath(filePath: string, artifactsDir: string, artifactId: string): void {
+    const resolved = path.resolve(filePath);
+    if (!resolved.startsWith(path.resolve(artifactsDir) + path.sep)) {
+      throw new Error(`Invalid artifact ID: "${artifactId}"`);
+    }
+  }
+
+  /**
    * Store an artifact. Returns metadata about the stored artifact.
    */
   store(artifactId: string, name: string, data: unknown): ArtifactInfo {
@@ -47,6 +57,7 @@ export class ArtifactStore {
         fs.mkdirSync(artifactsDir, { recursive: true });
       }
       const filePath = path.join(artifactsDir, `${artifactId}.json`);
+      this.validateArtifactPath(filePath, artifactsDir, artifactId);
       fs.writeFileSync(filePath, serialized, "utf-8");
       storedData = filePath;
     } else {

@@ -63,6 +63,24 @@ describe("Context", () => {
     expect(cloned.getLogs()).toEqual(["log1", "log2"]);
   });
 
+  it("clone deep copies object values so mutations are isolated", () => {
+    const ctx = new Context();
+    const obj = { nested: { count: 1 }, items: [1, 2, 3] };
+    ctx.set("data", obj);
+
+    const cloned = ctx.clone();
+
+    // Mutate the cloned value
+    const clonedData = cloned.get<{ nested: { count: number }; items: number[] }>("data")!;
+    clonedData.nested.count = 999;
+    clonedData.items.push(4);
+
+    // Original should be unaffected
+    const originalData = ctx.get<{ nested: { count: number }; items: number[] }>("data")!;
+    expect(originalData.nested.count).toBe(1);
+    expect(originalData.items).toEqual([1, 2, 3]);
+  });
+
   it("applyUpdates merges key-value pairs", () => {
     const ctx = new Context();
     ctx.set("existing", "old");
