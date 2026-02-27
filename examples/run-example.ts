@@ -22,8 +22,8 @@ import { fileURLToPath } from "node:url";
 import {
   PipelineRunner,
   AutoApproveInterviewer,
-} from "@attractor/attractor";
-import type { PipelineEvent } from "@attractor/attractor";
+} from "../packages/attractor/src/index.js";
+import type { PipelineEvent } from "../packages/attractor/src/index.js";
 
 // ---------------------------------------------------------------------------
 // Resolve the DOT file path relative to this script
